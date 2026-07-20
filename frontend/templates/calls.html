@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Parallel Call Progress</h2>
+  <p>Calling three mover counter-agents with identical job specs.</p>
+  <button id="run-calls" class="btn primary">Start Parallel Calls</button>
+  <ul id="call-list" class="call-list"></ul>
+  <a id="next-quotes" class="btn secondary" href="#">View Quotes →</a>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  const jobId = new URLSearchParams(window.location.search).get("job_id") || localStorage.getItem("job_id");
+  document.getElementById("next-quotes").href = `/quotes?job_id=${jobId || ""}`;
+
+  document.getElementById("run-calls").addEventListener("click", async () => {
+    const data = await NegotiatorAPI.startCalls(jobId);
+    const list = document.getElementById("call-list");
+    list.innerHTML = "";
+    data.quotes.forEach((quote) => {
+      const li = document.createElement("li");
+      li.innerHTML = `<strong>${quote.vendor_name}</strong> — ${quote.negotiation_style} — ${quote.outcome} — $${quote.total}`;
+      list.appendChild(li);
+    });
+  });
+</script>
+{% endblock %}

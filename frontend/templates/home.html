@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero card">
+  <h2>Never overpay for your move again</h2>
+  <p>
+    Daniel's 45-mile Rock Hill → Charlotte move quoted anywhere from $1,158 to $6,506.
+    The Negotiator gathers binding quotes by phone, compares itemized fees, and negotiates the best deal.
+  </p>
+  <ol class="flow-steps">
+    <li>Voice + document intake builds a confirmed job spec</li>
+    <li>Parallel calls to 3 mover counter-agents</li>
+    <li>Negotiation leverages competing bids</li>
+    <li>Ranked report with transcripts and red-flag warnings</li>
+  </ol>
+  <button id="start-job-btn" class="btn primary">Start a Move Job</button>
+  <p id="job-status" class="muted"></p>
+</section>
+<section class="card grid-3">
+  <article>
+    <h3>01 Estimator</h3>
+    <p>Voice interview + document parsing into one JSON job spec.</p>
+  </article>
+  <article>
+    <h3>02 Caller</h3>
+    <p>Three distinct negotiation styles called in parallel.</p>
+  </article>
+  <article>
+    <h3>03 Closer</h3>
+    <p>Price-match negotiation, 30% red flags, ranked recommendation.</p>
+  </article>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  document.getElementById("start-job-btn").addEventListener("click", async () => {
+    const job = await NegotiatorAPI.createJob();
+    localStorage.setItem("job_id", job.id);
+    document.getElementById("job-status").textContent = `Job ${job.id} created. Continue to voice intake.`;
+    window.location.href = `/intake/voice?job_id=${job.id}`;
+  });
+</script>
+{% endblock %}

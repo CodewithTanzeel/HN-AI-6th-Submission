@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Document Upload</h2>
+  <p>Upload an existing quote PDF, inventory list, or room photo notes.</p>
+  <input type="file" id="document-file" accept=".txt,.pdf,.png,.jpg,.jpeg">
+  <div class="actions">
+    <button id="upload-doc" class="btn primary">Parse Document</button>
+    <a id="next-confirm" class="btn secondary" href="#">Review Spec →</a>
+  </div>
+  <pre id="doc-spec-preview" class="code-block"></pre>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  const jobId = new URLSearchParams(window.location.search).get("job_id") || localStorage.getItem("job_id");
+  document.getElementById("next-confirm").href = `/intake/confirm?job_id=${jobId || ""}`;
+
+  document.getElementById("upload-doc").addEventListener("click", async () => {
+    const fileInput = document.getElementById("document-file");
+    if (!fileInput.files.length) return alert("Choose a file first.");
+    const result = await NegotiatorAPI.uploadDocument(jobId, fileInput.files[0]);
+    document.getElementById("doc-spec-preview").textContent = JSON.stringify(result.spec, null, 2);
+  });
+</script>
+{% endblock %}

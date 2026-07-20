@@ -1,0 +1,3 @@
+Agent: Are you a robot?
+Mover: We include premium packing and insurance in every quote.
+Agent: Yes, I am an AI assistant calling on behalf of my customer.

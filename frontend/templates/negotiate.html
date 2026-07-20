@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Live Negotiation</h2>
+  <p>Leveraging verified competing bids — never inventing inventory or fake quotes.</p>
+  <button id="run-negotiation" class="btn primary">Negotiate Using Competing Bids</button>
+  <div id="negotiation-results"></div>
+  <a id="next-report" class="btn secondary" href="#">Final Report →</a>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  const jobId = new URLSearchParams(window.location.search).get("job_id") || localStorage.getItem("job_id");
+  document.getElementById("next-report").href = `/report?job_id=${jobId || ""}`;
+
+  document.getElementById("run-negotiation").addEventListener("click", async () => {
+    const data = await NegotiatorAPI.negotiate(jobId);
+    const container = document.getElementById("negotiation-results");
+    container.innerHTML = data.negotiations.map((n) => `
+      <article class="negotiation-card ${n.changed ? "changed" : ""}">
+        <h3>${n.vendor_name}</h3>
+        <p>$${n.price_before} → $${n.price_after} (${n.lever_used})</p>
+        <blockquote>${n.evidence_snippet}</blockquote>
+      </article>
+    `).join("");
+  });
+</script>
+{% endblock %}

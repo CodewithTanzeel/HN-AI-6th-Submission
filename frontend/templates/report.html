@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Final Report</h2>
+  <button id="load-report" class="btn primary">Generate Ranked Report</button>
+  <p id="report-summary" class="lead"></p>
+  <div id="ranked-quotes"></div>
+  <div id="red-flags"></div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  const jobId = new URLSearchParams(window.location.search).get("job_id") || localStorage.getItem("job_id");
+
+  document.getElementById("load-report").addEventListener("click", async () => {
+    const report = await NegotiatorAPI.getReport(jobId);
+    document.getElementById("report-summary").textContent = report.summary;
+    document.getElementById("ranked-quotes").innerHTML = report.ranked_quotes.map((entry) => `
+      <article class="rank-card">
+        <h3>#${entry.rank} ${entry.quote.vendor_name} — $${entry.quote.total}</h3>
+        <p>${entry.recommendation_reason}</p>
+        <small>Transcript: ${entry.quote.transcript_url || "n/a"}</small>
+      </article>
+    `).join("");
+    document.getElementById("red-flags").innerHTML = report.red_flags.length
+      ? `<h3>Red Flags</h3><ul>${report.red_flags.map((f) => `<li>${f}</li>`).join("")}</ul>`
+      : "";
+  });
+</script>
+{% endblock %}

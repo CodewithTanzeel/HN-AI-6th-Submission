@@ -1,0 +1,3 @@
+Agent: Can you confirm the stair carry and long carry fees?
+Mover: Base rate is low but stairs add $275 and long carry adds $150.
+Agent: That quote is more than 30% below market — please confirm all line items.

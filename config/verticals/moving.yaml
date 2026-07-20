@@ -1,0 +1,90 @@
+vertical: moving
+display_name: Moving Companies
+
+job_spec:
+  required_for_binding:
+    - origin
+    - destination
+    - distance_miles
+    - move_date
+    - home.bedrooms
+    - inventory
+
+benchmarks:
+  price_per_mile: 4.50
+  price_per_bedroom: 450
+  base_fee: 350
+  market_example:
+    origin: Rock Hill, SC
+    destination: Charlotte, NC
+    distance_miles: 45
+    low_quote: 1158
+    high_quote: 6506
+
+red_flags:
+  below_market_pct: 30
+
+negotiation_levers:
+  - price_match
+  - waive_fees
+  - binding_quote
+  - bundle_exclusion
+
+ai_disclosure: >
+  Yes, I am an AI assistant calling on behalf of my customer to gather
+  binding moving quotes. I can answer any questions about the move details.
+
+counterparties:
+  - id: tough_negotiator
+    name: Carolina Haulers
+    phone: "+18005550101"
+    negotiation_style: tough_negotiator
+    base_multiplier: 1.05
+    hidden_fees: []
+  - id: hidden_fees_lowballer
+    name: Budget Move Express
+    phone: "+18005550102"
+    negotiation_style: hidden_fees_lowballer
+    base_multiplier: 0.72
+    hidden_fees:
+      - fee_type: stairs
+        description: Stair carry fee (3 flights)
+        amount: 275
+      - fee_type: long_carry
+        description: Long carry from parking
+        amount: 150
+  - id: hard_sell_upseller
+    name: Premium Relocation Co
+    phone: "+18005550103"
+    negotiation_style: hard_sell_upseller
+    base_multiplier: 1.15
+    upsell_fees:
+      - fee_type: packing
+        description: Full packing service
+        amount: 420
+      - fee_type: insurance
+        description: Premium valuation coverage
+        amount: 180
+
+demo_movers:
+  - id: demo_mover_1
+    name: Queen City Movers
+    phone: "+17035550101"
+    rating: 4.2
+  - id: demo_mover_2
+    name: Palmetto Moving
+    phone: "+18035550102"
+    rating: 4.5
+  - id: demo_mover_3
+    name: Two States Transport
+    phone: "+17045550103"
+    rating: 3.9
+
+interview_questions:
+  - origin
+  - destination
+  - move_date
+  - bedrooms
+  - stairs
+  - large_items
+  - packing_needs

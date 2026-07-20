@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Quotes Comparison</h2>
+  <table id="quotes-table" class="data-table">
+    <thead>
+      <tr>
+        <th>Vendor</th>
+        <th>Style</th>
+        <th>Total</th>
+        <th>Fees</th>
+        <th>Red Flag</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <a id="next-negotiate" class="btn secondary" href="#">Run Negotiation →</a>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  const jobId = new URLSearchParams(window.location.search).get("job_id") || localStorage.getItem("job_id");
+  document.getElementById("next-negotiate").href = `/negotiate?job_id=${jobId || ""}`;
+
+  async function loadQuotes() {
+    const data = await NegotiatorAPI.getCalls(jobId);
+    const tbody = document.querySelector("#quotes-table tbody");
+    tbody.innerHTML = "";
+    data.quotes.forEach((quote) => {
+      const fees = quote.line_items.map((item) => `${item.description}: $${item.amount}`).join("; ");
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${quote.vendor_name}</td>
+        <td>${quote.negotiation_style}</td>
+        <td>$${quote.total}</td>
+        <td>${fees}</td>
+        <td>${quote.red_flag || "—"}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+  loadQuotes();
+</script>
+{% endblock %}

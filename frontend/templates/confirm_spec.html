@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Review & Confirm Job Spec</h2>
+  <p>Confirm every detail before outbound calls begin.</p>
+  <div id="binding-status" class="status-pill"></div>
+  <pre id="merged-spec" class="code-block"></pre>
+  <div class="actions">
+    <button id="refresh-spec" class="btn secondary">Refresh</button>
+    <button id="confirm-spec" class="btn primary">Confirm Spec</button>
+    <a id="start-calls" class="btn secondary" href="#">Start Calls →</a>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  const jobId = new URLSearchParams(window.location.search).get("job_id") || localStorage.getItem("job_id");
+  document.getElementById("start-calls").href = `/calls?job_id=${jobId || ""}`;
+
+  async function refreshSpec() {
+    const data = await NegotiatorAPI.getSpec(jobId);
+    document.getElementById("merged-spec").textContent = JSON.stringify(data.spec, null, 2);
+    const pill = document.getElementById("binding-status");
+    pill.textContent = data.binding_ready ? "Binding ready" : `Missing: ${data.missing_fields.join(", ")}`;
+    pill.className = `status-pill ${data.binding_ready ? "ok" : "warn"}`;
+  }
+
+  document.getElementById("refresh-spec").addEventListener("click", refreshSpec);
+  document.getElementById("confirm-spec").addEventListener("click", async () => {
+    await NegotiatorAPI.confirmSpec(jobId);
+    await refreshSpec();
+  });
+  refreshSpec();
+</script>
+{% endblock %}

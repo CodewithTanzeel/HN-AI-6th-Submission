@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Voice Intake</h2>
+  <p>Describe your move as you would to a professional estimator.</p>
+  <textarea id="transcript" rows="8" placeholder="Moving from Rock Hill to Charlotte, 45 miles, 2 bedroom apartment, 2 flights of stairs, move date August 15..."></textarea>
+  <div class="actions">
+    <button id="submit-voice" class="btn primary">Submit Voice Intake</button>
+    <a id="next-docs" class="btn secondary" href="#">Continue to Documents →</a>
+  </div>
+  <pre id="spec-preview" class="code-block"></pre>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  const jobId = new URLSearchParams(window.location.search).get("job_id") || localStorage.getItem("job_id");
+  if (jobId) localStorage.setItem("job_id", jobId);
+  document.getElementById("next-docs").href = `/intake/documents?job_id=${jobId || ""}`;
+
+  document.getElementById("submit-voice").addEventListener("click", async () => {
+    const transcript = document.getElementById("transcript").value;
+    const result = await NegotiatorAPI.submitVoice(jobId, transcript);
+    document.getElementById("spec-preview").textContent = JSON.stringify(result.spec, null, 2);
+  });
+</script>
+{% endblock %}
